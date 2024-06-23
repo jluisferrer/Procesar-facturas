@@ -1,0 +1,19 @@
+{
+    "name": "jluis/procesar-facturas",
+    "version": "1.0.0",
+    "description": "extraccion datos facturas",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Jluis\\ProcesarFacturas\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "jluisFerrer"
+        }
+    ],
+    "require": {
+        "mindee/mindee": "^1.8"
+    }
+}

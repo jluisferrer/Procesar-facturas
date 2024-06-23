@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extracción de datos de facturas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Extracción de datos de facturas</h1>
+    <div class="contenedor-archivo">
+        <input type="file" id="archivo-factura" accept=".pdf">
+        <button id="btn-extraer">Extraer datos</button>
+    </div>
+    <div id="contenedor-resultados" class="contenedor-resultados">
+        <h2>Resultados</h2>
+        <table id="tabla-resultados">
+            <thead>
+                <tr>
+                    <th>Número de factura</th>
+                    <th>NIF empresa</th>
+                    <th>Nombre empresa</th>
+                    <th>Importe total</th>
+                    <th>IVA</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

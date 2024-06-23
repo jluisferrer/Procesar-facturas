@@ -1,0 +1,36 @@
+body {
+    font-family: sans-serif;
+}
+
+.contenedor-archivo {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+#archivo-factura {
+    margin-bottom: 10px;
+}
+
+#btn-extraer {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#contenedor-resultados {
+    display: none;
+}
+
+#tabla-resultados {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#tabla-resultados th,
+#tabla-resultados td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
