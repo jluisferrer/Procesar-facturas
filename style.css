@@ -1,36 +1,39 @@
+/* style.css */
 body {
-    font-family: sans-serif;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
 }
 
 .contenedor-archivo {
-    display: flex;
-    flex-direction: column;
     margin-bottom: 20px;
-}
-
-#archivo-factura {
-    margin-bottom: 10px;
-}
-
-#btn-extraer {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
+    text-align: center;
 }
 
 #contenedor-resultados {
-    display: none;
+    margin-top: 20px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-#tabla-resultados {
+table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 10px;
 }
 
-#tabla-resultados th,
-#tabla-resultados td {
-    border: 1px solid #ddd;
+th, td {
     padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
 }

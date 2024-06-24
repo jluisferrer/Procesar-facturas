@@ -1,30 +1,44 @@
 <?php
+require_once 'vendor/autoload.php'; 
 
-require_once 'mindee-invoice-ocr.php';
-require_once 'config.php'; // (Opcional)
+use Mindee\Client;
+use Mindee\Product\Invoice\InvoiceV4;
 
-// Obtiene el archivo PDF cargado por el usuario
-$archivoFactura = $_FILES['archivo-factura']['tmp_name'];
+// Verifica si se ha enviado un archivo
+if ($_FILES['factura']['error'] === UPLOAD_ERR_OK) {
+    // Ruta temporal del archivo subido
+    $fileTmpPath = $_FILES['factura']['tmp_name'];
 
-if (!$archivoFactura) {
-    echo json_encode(['exito' => false, 'mensaje' => 'Error al obtener el archivo de factura.']);
-    exit;
+    // Inicializa el cliente Mindee con tu clave API
+    $mindeeClient = new Client("680a9fe5955b4232f292ce6d3876226a");
+
+    // Carga el archivo desde el sistema de archivos
+    $inputSource = $mindeeClient->sourceFromPath($fileTmpPath);
+
+    // Parsea el archivo con el modelo InvoiceV4
+    $apiResponse = $mindeeClient->parse(InvoiceV4::class, $inputSource);
+
+    // Verifica si se obtuvo una respuesta válida
+    if ($apiResponse->document !== null && $apiResponse->document->inference !== null && $apiResponse->document->inference->prediction !== null) {
+        // Extrae los datos relevantes de la respuesta
+        $supplierName = $apiResponse->document->inference->prediction->supplierName->value ?? '';
+        $supplierCompanyRegistrations = $apiResponse->document->inference->prediction->supplierCompanyRegistrations ?? [];
+
+        // Construye la respuesta en formato JSON
+        $response = [
+            'supplierName' => $supplierName,
+            'supplierCompanyRegistrations' => $supplierCompanyRegistrations,
+        ];
+
+        // Devuelve la respuesta como JSON
+        header('Content-Type: application/json');
+        echo json_encode($response);
+    } else {
+        // Manejo de errores si no se obtuvo una respuesta válida
+        echo json_encode(['error' => 'No se pudo extraer información de la factura']);
+    }
+} else {
+    // Manejo de errores si no se puede subir el archivo
+    echo json_encode(['error' => 'Error al subir el archivo']);
 }
-
-// Extrae los datos de la factura usando la API de Mindee Invoice OCR
-$mindee = new MindeeInvoiceOCR($apiKey);
-$datosFactura = $mindee->extractData($archivoFactura);
-
-if (!$datosFactura) {
-    echo json_encode(['exito' => false, 'mensaje' => 'Error al extraer los datos de la factura.']);
-    exit;
-}
-
-// Guarda los datos extraídos en la base de datos (opcional)
-if ($databaseCredentials) {
-    // Conéctate a la base de datos y guarda los datos
-    // ...
-}
-
-// Envía la respuesta JSON con los datos extraídos
-echo json_encode(['exito' => true, 'datos' => $datosFactura]);
+?>

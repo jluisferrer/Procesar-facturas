@@ -1,50 +1,36 @@
-const archivoFactura = document.getElementById('archivo-factura');
-const btnExtraer = document.getElementById('btn-extraer');
-const contenedorResultados = document.getElementById('contenedor-resultados');
-const tablaResultados = document.getElementById('tabla-resultados');
+// script.js
 
-btnExtraer.addEventListener('click', () => {
-    const file = archivoFactura.files[0];
-    if (file && file.type === 'application/pdf') {
-        contenedorResultados.style.display = 'none';
-        tablaResultados.innerHTML = '';
+document.getElementById('formulario-factura').addEventListener('submit', function(event) {
+  event.preventDefault();
 
-        const formData = new FormData();
-        formData.append('file', file);
+  var formData = new FormData(this);
 
-        fetch('procesar-factura.php', {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.datos) {
-                    mostrarResultados(data.datos);
-                } else {
-                    alert('Error al procesar la factura');
-                }
-            })
-            .catch(error => console.error(error));
-    } else {
-        alert('Seleccione un archivo PDF válido');
-    }
+  fetch('procesar-factura.php', {
+      method: 'POST',
+      body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+      // Mostrar resultados en la tabla
+      var tablaBody = document.getElementById('tabla-body');
+      tablaBody.innerHTML = ''; // Limpiar resultados anteriores
+
+      if (data.error) {
+          alert('Error: ' + data.error);
+      } else {
+          var row = document.createElement('tr');
+          var cell1 = document.createElement('td');
+          var cell2 = document.createElement('td');
+          cell1.textContent = data.supplierTaxId;
+          cell2.textContent = data.supplierName;
+          row.appendChild(cell1);
+          row.appendChild(cell2);
+          tablaBody.appendChild(row);
+          document.getElementById('contenedor-resultados').style.display = 'block';
+      }
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      alert('Hubo un problema al procesar la factura.');
+  });
 });
-
-function mostrarResultados(datos) {
-    contenedorResultados.style.display = 'block';
-
-    for (const factura of datos) {
-        const fila = tablaResultados.insertRow();
-        const numeroFactura = fila.insertCell();
-        const nifEmpresa = fila.insertCell();
-        const nombreEmpresa = fila.insertCell();
-        const importeTotal = fila.insertCell();
-        const iva = fila.insertCell();
-
-        numeroFactura.textContent = factura.numeroFactura;
-        nifEmpresa.textContent = factura.nifEmpresa;
-        nombreEmpresa.textContent = factura.nombreEmpresa;
-        importeTotal.textContent = factura.importeTotal;
-        iva.textContent = factura.iva;
-    }
-}
