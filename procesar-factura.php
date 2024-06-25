@@ -1,5 +1,5 @@
 <?php
-require_once 'vendor/autoload.php'; 
+require_once 'vendor/autoload.php';
 
 use Mindee\Client;
 use Mindee\Product\Invoice\InvoiceV4;
@@ -20,9 +20,15 @@ if ($_FILES['factura']['error'] === UPLOAD_ERR_OK) {
 
     // Verifica si se obtuvo una respuesta válida
     if ($apiResponse->document !== null && $apiResponse->document->inference !== null && $apiResponse->document->inference->prediction !== null) {
-        // Extrae los datos relevantes de la respuesta
+
+        // Procesar supplierName
         $supplierName = $apiResponse->document->inference->prediction->supplierName->value ?? '';
-        $supplierCompanyRegistrations = $apiResponse->document->inference->prediction->supplierCompanyRegistrations ?? [];
+
+        // Procesar supplierCompanyRegistrations
+        $supplierCompanyRegistrations = [];
+        foreach ($apiResponse->document->inference->prediction->supplierCompanyRegistrations as $registration) {
+            $supplierCompanyRegistrations[] = $registration->value;
+        }
 
         // Construye la respuesta en formato JSON
         $response = [
@@ -41,4 +47,3 @@ if ($_FILES['factura']['error'] === UPLOAD_ERR_OK) {
     // Manejo de errores si no se puede subir el archivo
     echo json_encode(['error' => 'Error al subir el archivo']);
 }
-?>

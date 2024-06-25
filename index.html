@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Extracción de datos de facturas</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <h1>Extracción de datos de facturas</h1>
   <div class="contenedor-archivo">
-    <form id="formulario-factura" action="procesar-factura.php" method="post" enctype="multipart/form-data">
+    <form id="formulario-factura" method="post" enctype="multipart/form-data">
       <input type="file" id="archivo-factura" name="factura" accept=".pdf">
-      <button type="submit" id="btn-extraer">Extraer datos</button>
     </form>
   </div>
   <div id="contenedor-resultados" class="contenedor-resultados" style="display: none;">
@@ -19,7 +20,7 @@
     <table id="tabla-resultados">
       <thead>
         <tr>
-          <th>NIF empresa</th>
+          <th>NIF</th>
           <th>Nombre empresa</th>
         </tr>
       </thead>
@@ -29,4 +30,5 @@
   </div>
   <script src="script.js"></script>
 </body>
+
 </html>
