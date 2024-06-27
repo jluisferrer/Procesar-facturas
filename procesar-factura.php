@@ -39,6 +39,13 @@ if ($_FILES['factura']['error'] === UPLOAD_ERR_OK) {
         //Procesar totalTax
         $totalTax = $apiResponse->document->inference->prediction->totalTax->value ?? 0;
 
+        //Procesar número de paginas del documento
+        $numPages = $apiResponse->document->inference->prediction->totalPages ?? 0;
+        if ($numPages <= 0) {
+            $numPages = 1; // Asegurarse de que al menos se reporte una página
+        }
+        //Procesar HASH del documento
+        $hash = hash_file('sha256', $fileTmpPath);
 
         // Construye la respuesta en formato JSON
         $response = [
@@ -47,6 +54,8 @@ if ($_FILES['factura']['error'] === UPLOAD_ERR_OK) {
             'invoiceNumber' => $invoiceNumber,
             'totalAmount' => $totalAmount,
             'totalTax' => $totalTax,
+            'numPages' => $numPages,
+            'hash' => $hash
         ];
 
         // Devuelve la respuesta como JSON
