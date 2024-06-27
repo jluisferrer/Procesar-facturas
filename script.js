@@ -1,7 +1,7 @@
 document.getElementById('archivo-factura').addEventListener('change', function (event) {
     event.preventDefault();  // Previene el envío del formulario si se desencadena por otro evento.
 
-    var formData = new FormData(document.getElementById('formulario-factura'));
+    let formData = new FormData(document.getElementById('formulario-factura'));
 
     fetch('procesar-factura.php', {
         method: 'POST',
@@ -10,21 +10,30 @@ document.getElementById('archivo-factura').addEventListener('change', function (
         .then(response => response.json())
         .then(data => {
             // Mostrar resultados en la tabla
-            var tablaBody = document.getElementById('tabla-body');
+            let tablaBody = document.getElementById('tabla-body');
             tablaBody.innerHTML = ''; // Limpiar resultados anteriores
 
             if (data.error) {
                 alert('Error: ' + data.error);
             } else {
-                var row = document.createElement('tr');
-                var cell1 = document.createElement('td');
-                var cell2 = document.createElement('td');
+                let row = document.createElement('tr');
+                let cell1 = document.createElement('td');
+                let cell2 = document.createElement('td');
+                let cell3 = document.createElement('td');
+                let cell4 = document.createElement('td');
+                let cell5 = document.createElement('td');
 
                 cell1.textContent = data.supplierCompanyRegistrations;
                 cell2.textContent = data.supplierName;
+                cell3.textContent = data.invoiceNumber;
+                cell4.textContent = data.totalAmount;
+                cell5.textContent = data.vatAmount;
 
                 row.appendChild(cell1);
                 row.appendChild(cell2);
+                row.appendChild(cell3);
+                row.appendChild(cell4);
+                row.appendChild(cell5);
                 tablaBody.appendChild(row);
                 document.getElementById('contenedor-resultados').style.display = 'block';
             }

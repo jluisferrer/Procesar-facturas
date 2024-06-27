@@ -30,10 +30,22 @@ if ($_FILES['factura']['error'] === UPLOAD_ERR_OK) {
             $supplierCompanyRegistrations[] = $registration->value;
         }
 
+        //Procesar invoiceNumber
+        $invoiceNumber = $apiResponse->document->inference->prediction->invoiceNumber->value ?? '';
+
+        //Procesar totalAmount
+        $totalAmount = $apiResponse->document->inference->prediction->totalAmount->value ?? 0;
+
+        //Procesar vatAmount
+        $vatAmount = $apiResponse->document->inference->prediction->vatAmount->value ?? 0;
+
         // Construye la respuesta en formato JSON
         $response = [
             'supplierName' => $supplierName,
             'supplierCompanyRegistrations' => $supplierCompanyRegistrations,
+            'invoiceNumber' => $invoiceNumber,
+            'totalAmount' => $totalAmount,
+            'vatAmount' => $vatAmount
         ];
 
         // Devuelve la respuesta como JSON
