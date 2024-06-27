@@ -27,7 +27,7 @@ document.getElementById('archivo-factura').addEventListener('change', function (
                 cell2.textContent = data.supplierName;
                 cell3.textContent = data.invoiceNumber;
                 cell4.textContent = data.totalAmount;
-                cell5.textContent = data.vatAmount;
+                cell5.textContent = data.totalTax;
 
                 row.appendChild(cell1);
                 row.appendChild(cell2);

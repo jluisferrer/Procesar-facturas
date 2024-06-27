@@ -36,8 +36,9 @@ if ($_FILES['factura']['error'] === UPLOAD_ERR_OK) {
         //Procesar totalAmount
         $totalAmount = $apiResponse->document->inference->prediction->totalAmount->value ?? 0;
 
-        //Procesar vatAmount
-        $vatAmount = $apiResponse->document->inference->prediction->vatAmount->value ?? 0;
+        //Procesar totalTax
+        $totalTax = $apiResponse->document->inference->prediction->totalTax->value ?? 0;
+
 
         // Construye la respuesta en formato JSON
         $response = [
@@ -45,7 +46,7 @@ if ($_FILES['factura']['error'] === UPLOAD_ERR_OK) {
             'supplierCompanyRegistrations' => $supplierCompanyRegistrations,
             'invoiceNumber' => $invoiceNumber,
             'totalAmount' => $totalAmount,
-            'vatAmount' => $vatAmount
+            'totalTax' => $totalTax,
         ];
 
         // Devuelve la respuesta como JSON
