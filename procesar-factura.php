@@ -1,5 +1,7 @@
 <?php
+
 require_once 'vendor/autoload.php';
+require_once 'db.php'; // Incluye la conexión a la base de datos
 
 use Mindee\Client;
 use Mindee\Product\Invoice\InvoiceV4;
@@ -44,23 +46,44 @@ if ($_FILES['factura']['error'] === UPLOAD_ERR_OK) {
         if ($numPages <= 0) {
             $numPages = 1; // Asegurarse de que al menos se reporte una página
         }
-        //Procesar HASH del documento
+        //Calcular el hash del archivo
         $hash = hash_file('sha256', $fileTmpPath);
 
-        // Construye la respuesta en formato JSON
-        $response = [
-            'supplierName' => $supplierName,
-            'supplierCompanyRegistrations' => $supplierCompanyRegistrations,
-            'invoiceNumber' => $invoiceNumber,
-            'totalAmount' => $totalAmount,
-            'totalTax' => $totalTax,
-            'numPages' => $numPages,
-            'hash' => $hash
-        ];
+        // Inserta los datos en la base de datos
+        try {
+            $stmt = $pdo->prepare("
+                INSERT INTO facturas (nif, nombre_empresa, numero_factura, importe_total, iva_total, numero_paginas, hash) 
+                VALUES (:nif, :nombreEmpresa, :numeroFactura, :importeTotal, :ivaTotal, :numeroPaginas, :hash)
+            ");
 
-        // Devuelve la respuesta como JSON
-        header('Content-Type: application/json');
-        echo json_encode($response);
+            $stmt->execute([
+                ':nif' => json_encode($supplierCompanyRegistrations),
+                ':nombreEmpresa' => $supplierName,
+                ':numeroFactura' => $invoiceNumber,
+                ':importeTotal' => $totalAmount,
+                ':ivaTotal' => $totalTax,
+                ':numeroPaginas' => $numPages,
+                ':hash' => $hash,
+            ]);
+
+            // Construye la respuesta en formato JSON
+            $response = [
+                'supplierName' => $supplierName,
+                'supplierCompanyRegistrations' => $supplierCompanyRegistrations,
+                'invoiceNumber' => $invoiceNumber,
+                'totalAmount' => $totalAmount,
+                'totalTax' => $totalTax,
+                'numPages' => $numPages,
+                'hash' => $hash
+            ];
+
+            // Devuelve la respuesta como JSON
+            header('Content-Type: application/json');
+            echo json_encode($response);
+        } catch (PDOException $e) {
+            // Manejo de errores si no se pudo guardar en la base de datos
+            echo json_encode(['error' => 'Error al guardar en la base de datos: ' . $e->getMessage()]);
+        }
     } else {
         // Manejo de errores si no se obtuvo una respuesta válida
         echo json_encode(['error' => 'No se pudo extraer información de la factura']);
